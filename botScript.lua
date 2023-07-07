@@ -19,7 +19,8 @@ local loopCount = 0
 local function hitAndRunLoop()
     PressDirectionKey(directionKey)
     bot.delay(100,true)
-
+    curRole:useBuffSkill()
+    
     for i = 1, curMap.oneLoopStep do
         print("jump and hit: " .. i .. " -----------------")
         curRole:jumpAndHit(3)

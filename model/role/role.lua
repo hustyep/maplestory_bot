@@ -31,8 +31,17 @@ function Role:new(o)
     return obj
 end
 
+function Role:useBuffSkill()
+    print("try user buff skill")
+    for index, value in ipairs(self.buffSklls) do
+        if value:cast() then
+            break
+        end
+    end
+end
+
 function Role:jumpAndHit(jumpTimes)
-    print("jump and hit")
+    -- print("jump and hit")
     if self.moveSkill:is(MoveSkill) then
         local jumpSkill = MultiJump:new(self.moveSkill)
         jumpSkill:cast(jumpTimes)
@@ -46,7 +55,7 @@ end
 function Role:say(text)
 	bot.pressKey("Enter", 500)
 	SayString(text)
-	Delay(200)
+	Sleep(200)
 	bot.pressKey("Enter", 500)
 end
 

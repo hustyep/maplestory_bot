@@ -74,7 +74,7 @@ end
 ---@param delay integer
 ---@param isAsync boolean | nil
 function bot.pressKey(key, delay, isAsync)
-	print("pressKey:", key, delay, isAsync)
+	-- print("pressKey:", key, delay, isAsync)
 
 	KeyPress(key)
 	isAsync = isAsync or true

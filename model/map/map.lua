@@ -83,7 +83,7 @@ function Map:detectOtherPlayer()
     else
         self.noDetectCount = self.noDetectCount + 1
         if (self.noDetectCount <= 10) then
-            print('No detection', self.noDetectCount)
+            -- print('No detection', self.noDetectCount)
         end
     end
 

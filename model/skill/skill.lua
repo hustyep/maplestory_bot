@@ -18,19 +18,26 @@ Direction = {
 ---@param direction Direction
 function PressDirectionKey(direction)
     for i, v in ipairs(direction) do
-        print("press direction:", direction)
+        -- print("press direction:", direction)
         KeyDown(v)
     end
 end
 
 ---@class Skill: Object @skill meta class
 Skill = {
+    ---@type string
     key = "F",
+    ---@type integer @milliseconds
     cooldown = 60000,
+    ---@type integer @milliseconds
     castedTime = 0,
+    ---@type integer @milliseconds
     precast = 0,
+    ---@type integer @milliseconds
     backswing = 500,
+    ---@type integer
     castX = 0,
+    ---@type integer
     castY = 0,
     castToleranceX = 10,
     castToleranceY = 10,
@@ -59,6 +66,26 @@ function Skill:newWithArray(array)
     return o
 end
 
+---@param x integer | nil
+---@param y integer | nil
+---@return boolean
+function Skill:canUse(x, y)
+    if self.cooldown > 0 then
+        if CurrentTime() - self.castedTime < self.cooldown and self.castedTime ~= 0 then
+            print('try cast skill failed: ', self.key, 'cooling')
+            return false
+        end
+    end
+
+    if self.castX ~= 0 and self.castY ~= 0 then
+        if math.abs(x - self.castX) > self.castToleranceX or math.abs(y - self.castY) > self.castToleranceY then
+            print('try cast skill failed: ', self.key, ' position')
+            return false
+        end
+    end
+    return true
+end
+
 ---comment
 ---@param x integer | nil
 ---@param y integer | nil
@@ -68,23 +95,13 @@ function Skill:cast(x, y)
     x = x or 0
     y = y or 0
 
-    if self.cooldown > 0 then
-        if os.clock() - self.castedTime < self.cooldown and self.castedTime ~= 0 then
-            print('try cast skill: ' .. self.key .. ' time fail')
-            return false
-        end
-    end
-
-    if self.castX ~= 0 and self.castY ~= 0 then
-        if math.abs(x - self.castX) > self.castToleranceX or math.abs(y - self.castY) > self.castToleranceY then
-            print('try cast skill: ' .. self.key .. ' position fail')
-            return false
-        end
+    if self:canUse(x, y) == false then
+        return false
     end
 
     print('begin cast skill: ' .. self.key)
     bot.delay(self.precast)
-    self.castedTime = os.clock()
+    self.castedTime = CurrentTime()
     KeyPress(self.key)
     bot.delay(self.backswing)
     print('cast skill end: ' .. self.key)

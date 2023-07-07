@@ -22,21 +22,21 @@ jumpSkill.backswing = 50
 jumpSkill.maxTimes = 3
 
 -- buff skill or buff potion
-local buff1 = Skill:newWithArray({ "1", 190000, 0, 0, 850, 0, 0 })
-local buff2 = Skill:newWithArray({ "2", 120000, 0, 0, 600, 0, 0 })
+local buff1 = Skill:newWithArray({ "1", 10000, 0, 0, 850, 0, 0 })
+local buff2 = Skill:newWithArray({ "2", 20000, 0, 0, 600, 0, 0 })
 local buffSkills = { buff1, buff2 }
 
 -- aoe skill
-local skill1 = Skill:newWithArray({ "1", 190000, 0, 0, 850, 0, 0 })
-local skill2 = Skill:newWithArray({ "2", 120000, 0, 0, 600, 0, 0 })
-aoeSkills = { skill1, skill2 }
+local skill1 = Skill:newWithArray({ "x", 190000, 0, 0, 850, 0, 0 })
+local skill2 = Skill:newWithArray({ "c", 120000, 0, 0, 600, 0, 0 })
+local aoeSkills = { skill1, skill2 }
 
-commonRole = Role:new()
-commonRole.name = "shadower"
-commonRole.mainAtkSkill = atkSkill
-commonRole.moveSkill = jumpSkill
-commonRole.buffSklls = buffSkills
--- testRole.aoeSkills = aoeSkills
-commonRole.summonSkill = SummoningSkill:new()
+CommonRole = Role:new()
+CommonRole.name = "shadower"
+CommonRole.mainAtkSkill = atkSkill
+CommonRole.moveSkill = jumpSkill
+CommonRole.buffSklls = buffSkills
+CommonRole.aoeSkills = aoeSkills
+CommonRole.summonSkill = SummoningSkill:new()
 -- testRole.showerSkill = ShowerSkill:new()
-commonRole.teleportSkill = nil
+CommonRole.teleportSkill = nil

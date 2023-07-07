@@ -2,7 +2,7 @@ require("bot")
 dofile("model/map/testMap.lua")
 dofile("model/role/commonRole.lua")
 
-local role = commonRole
+local role = CommonRole
 local map = testMap
 
 key_hid(0)
