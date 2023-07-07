@@ -3,7 +3,6 @@
         // "lowercase-global"
     ],
     "Lua.diagnostics.globals": [
-        // "Delay",
         "GetScreenResolution",
         "FindBmp",
         "TimerLoopStart",
@@ -16,5 +15,6 @@
         "VK",
         "TimerStart",
         "SayString",
+        "GetKeyState"
     ]
 }

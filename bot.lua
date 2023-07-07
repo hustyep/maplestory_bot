@@ -17,11 +17,11 @@ local botCo
 ---| "running"   # running.
 ---| "paused"    # paused
 ---| "stopped"   # stopped
-local ScriptStatus = "running"
+local scriptStatus = "running"
 
 bot.startTime = CurrentTime()
 
----keyboard event
+---keyboard event 
 ---@param e
 ---| 0  # relased
 ---| 1  # pressed
@@ -34,18 +34,31 @@ local function onKeyboardEvent(e, v)
 
 	-- print("key pressed", v)
 
-	if (v == VK('F2')) then
-		bot.pause()
-	elseif v == VK('F3') then
+	local keysta = GetKeyState(VK("LCtrl"))
+	if keysta >= 0 then
+		return
+	end
+
+
+	if (v == VK('1')) then
+		if scriptStatus == "running" then
+			bot.pause()
+		elseif scriptStatus == "paused" then
+			bot.resume()
+		end
+	elseif v == VK('3') then
 		bot.stop()
-	elseif v == VK('F1') then
-		bot.resume()
+	elseif v == VK('2') then
+		if scriptStatus == "paused" then
+			bot.restart()
+		end
 	end
 end
 
 local function runScript()
 	print("bot start----------------------")
-	botScript.create(curRole, curMap)
+	local script = BotScript:new(nil, curRole, curMap)
+	script:start(curRole, curMap)
 end
 
 ---@param milliseconds integer
@@ -57,7 +70,7 @@ function bot.delay(milliseconds, forceAsync)
 	forceAsync = forceAsync or false
 	if milliseconds > 80 or forceAsync == true then
 		TimerStart(function()
-			if ScriptStatus == "running" then
+			if scriptStatus == "running" then
 				bot.resume()
 			else
 				key_hid(0)
@@ -104,25 +117,33 @@ function bot.start(role, map)
 	coroutine.resume(botCo)
 end
 
+function bot.restart()
+	key_hid(0)
+	scriptStatus = "running"
+	botCo = coroutine.create(runScript)
+	bot.startTime = CurrentTime()
+	coroutine.resume(botCo)
+end
+
 function bot.resume()
 	key_hid(0)
-	ScriptStatus = "running"
+	scriptStatus = "running"
 	coroutine.resume(botCo)
 end
 
 function bot.pause()
 	key_hid(0)
-	ScriptStatus = "paused"
+	scriptStatus = "paused"
 end
 
 function bot.stop()
 	key_hid(0)
-	ScriptStatus = "stopped"
+	scriptStatus = "stopped"
 	error("stopped")
 end
 
 function checkRunningStatus()
-	print("bot status:", ScriptStatus)
+	print("bot status:", scriptStatus)
 end
 
 return bot
