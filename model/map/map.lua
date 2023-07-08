@@ -10,7 +10,7 @@ Map = {
     miniMapMeY = 0,
     floors = 3,
     ---@type integer
-    oneLoopStep = 3,
+    oneLoopStep = 4,
     ---@type integer
     detectCount = 0,
     ---@type integer
@@ -43,7 +43,7 @@ end
 ---@return boolean success
 function Map:locateMiniMap()
     local screenX, screenY = GetScreenResolution()
-    local tlX, tlY = FindBmp('images\\topLeft.bmp', 0, 0, screenX, screenY)
+    local tlX, tlY = FindBmp('images\\topLeft.bmp', 0, 0, screenX / 2, screenY / 2)
     if (tlX < 0 or tlY < 0) then
         print('Cannot locate mini-map')
         return false
@@ -112,11 +112,28 @@ function Map:locateSelf()
         self.miniMapX + self.miniMapWidth,
         self.miniMapY + self.miniMapHeight)
     if (meX >= 0 and meY >= 0) then
-        print('my location:', meX, meY)
-        self.miniMapMeX, self.miniMapMeY = meX, meY
+        -- print('my location:', meX, meY)
+        self.miniMapMeX, self.miniMapMeY = meX - self.miniMapX, meY - self.miniMapMeY
+        if self.miniMapMeX <= 10 then
+            print("left corner!!!!!!!!!!!!!!!")
+        elseif self.miniMapWidth - self.miniMapMeX <= 10 then
+            print("right corner!!!!!!!!!!!!!!!")
+        end
         return meX, meY
     else
         -- print('Cannot locate self')
         return -1, -1
     end
+end
+
+---comment
+---@return boolean
+function Map:nearLeftEdge()
+    return self.miniMapMeX <= 50
+end
+
+---comment
+---@return boolean
+function Map:nearRightEdge()
+    return self.miniMapWidth - self.miniMapMeX <= 50
 end

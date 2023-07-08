@@ -42,11 +42,11 @@ end
 ---@return boolean
 function MultiJump:cast(jumpTimes)
     jumpTimes = jumpTimes or self.maxJumpTimes
-    print("MultiJump", self.key, jumpTimes)
+    -- print("MultiJump", self.key, jumpTimes)
 
     self.castedTime = os.clock()
     bot.pressKey(JumpKey, 30, true)
-    bot.pressKey(self.key, 30, true)
+    bot.pressKey(self.key, 50)
 
     if jumpTimes == 3 then
         bot.pressKey(self.key, 30, true)

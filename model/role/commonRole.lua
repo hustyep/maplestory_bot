@@ -6,11 +6,11 @@ atkSkill.key = "F"
 atkSkill.backswing = 300
 
 function atkSkill:cast()
-    print('Attack skill: ', self.key)
+    -- print('Attack skill: ', self.key)
 
     self.castedTime = os.clock()
     bot.pressKey(self.key, self.backswing, true)
-    bot.pressKey("D", 300, true)
+    bot.pressKey("D", 250, true)
 
     return true
 end
@@ -22,9 +22,11 @@ jumpSkill.backswing = 50
 jumpSkill.maxTimes = 3
 
 -- buff skill or buff potion
-local buff1 = Skill:newWithArray({ "1", 10000, 0, 0, 850, 0, 0 })
-local buff2 = Skill:newWithArray({ "2", 20000, 0, 0, 600, 0, 0 })
-local buffSkills = { buff1, buff2 }
+local buff1 = Skill:newWithArray({ "L", 600000, 0, 0, 850, 0, 0 })
+-- local buff2 = Skill:newWithArray({ "2", 20000, 0, 0, 600, 0, 0 })
+-- local buff3 = Skill:newWithArray({ "2", 20000, 0, 0, 600, 0, 0 })
+
+local buffSkills = { buff1 }
 
 -- aoe skill
 local skill1 = Skill:newWithArray({ "x", 190000, 0, 0, 850, 0, 0 })

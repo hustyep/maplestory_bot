@@ -91,7 +91,7 @@ end
 ---@param y integer | nil
 ---@return boolean success
 function Skill:cast(x, y)
-    print('try cast skill: ', self.key, x, y)
+    -- print('try cast skill: ', self.key, x, y)
     x = x or 0
     y = y or 0
 
@@ -104,7 +104,7 @@ function Skill:cast(x, y)
     self.castedTime = CurrentTime()
     KeyPress(self.key)
     bot.delay(self.backswing)
-    print('cast skill end: ' .. self.key)
+    -- print('cast skill end: ' .. self.key)
 
     return true
 end

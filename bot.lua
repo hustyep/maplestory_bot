@@ -34,25 +34,29 @@ local function onKeyboardEvent(e, v)
 
 	-- print("key pressed", v)
 
-	local keysta = GetKeyState(VK("LCtrl"))
-	if keysta >= 0 then
-		return
-	end
+	-- local keysta = GetKeyState(VK("LCtrl"))
+	-- if keysta >= 0 then
+	-- 	return
+	-- end
 
 
-	if (v == VK('1')) then
+	if (v == VK('Pause')) then
 		if scriptStatus == "running" then
 			bot.pause()
 		elseif scriptStatus == "paused" then
 			bot.resume()
 		end
-	elseif v == VK('3') then
+	elseif v == VK('Scroll') then
 		bot.stop()
-	elseif v == VK('2') then
+	elseif v == VK('PrintScr') then
 		if scriptStatus == "paused" then
 			bot.restart()
 		end
 	end
+end
+
+function keychange(num, val)
+	print("外部按键"..num.. "状态".. val)  --1按下  0松开
 end
 
 local function runScript()
@@ -114,6 +118,7 @@ function bot.start(role, map)
 	map:startDetactPlayer()
 	TimerLoopStart(checkRunningStatus, 5000)
 	RegKbEvent(onKeyboardEvent)
+	-- RegPinChange(onKeyboardEvent)
 	coroutine.resume(botCo)
 end
 

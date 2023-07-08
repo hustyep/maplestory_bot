@@ -32,7 +32,7 @@ function Role:new(o)
 end
 
 function Role:useBuffSkill()
-    print("try user buff skill")
+    -- print("try user buff skill")
     for index, value in ipairs(self.buffSklls) do
         if value:cast() then
             break

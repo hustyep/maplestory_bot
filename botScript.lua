@@ -31,18 +31,32 @@ function BotScript:new(o, role, map)
 end
 
 function BotScript:hitAndRunLoop()
+    bot.delay(100, true)
     PressDirectionKey(self.curDirection)
     bot.delay(100, true)
     self.curRole:useBuffSkill()
 
-    for i = 1, self.curMap.oneLoopStep do
-        print("jump and hit: " .. i .. " -----------------")
+    while true do
+        if self.curDirection == Direction.right then
+            if self.curMap:nearRightEdge() then
+                break
+            end
+        elseif self.curDirection == Direction.left then
+            if self.curMap:nearLeftEdge() then
+                break
+            end
+        end
         self.curRole:jumpAndHit(3)
-        -- bot.delay(100)
     end
 
+    -- for i = 1, self.curMap.oneLoopStep do
+    --     -- print("jump and hit: " .. i .. " -----------------")
+    --     self.curRole:jumpAndHit(3)
+    -- end
+
     KeyUp("")
-    bot.delay(50)
+    -- key_hid(0)
+    bot.delay(100, true)
     self.loopCount = self.loopCount + 1
     if (self.curDirection == Direction.left) then
         self.curDirection = Direction.right
