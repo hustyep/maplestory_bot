@@ -55,10 +55,6 @@ local function onKeyboardEvent(e, v)
 	end
 end
 
-function keychange(num, val)
-	print("外部按键"..num.. "状态".. val)  --1按下  0松开
-end
-
 local function runScript()
 	print("bot start----------------------")
 	local script = BotScript:new(nil, curRole, curMap)
@@ -84,6 +80,30 @@ function bot.delay(milliseconds, forceAsync)
 		coroutine.yield()
 	else
 		Sleep(milliseconds)
+	end
+end
+
+local function checkRunningStatus()
+	print("bot status:", scriptStatus)
+end
+
+local function checkKeyStatus()
+	pauseKeySta=GetKeyState(VK("Pause"))
+	stopKeySta=GetKeyState(VK("Scroll"))
+	-- restartKeySta=GetKeyState(VK("Scroll"))
+
+	if pauseKeySta < 0 then
+		if scriptStatus == "running" then
+			bot.pause()
+		elseif scriptStatus == "paused" then
+			bot.resume()
+		end
+	elseif stopKeySta < 0 then
+		bot.stop()
+	-- elseif v == VK('PrintScr') then
+	-- 	if scriptStatus == "paused" then
+	-- 		bot.restart()
+	-- 	end
 	end
 end
 
@@ -117,8 +137,8 @@ function bot.start(role, map)
 	-- map:locateMiniMap()
 	map:startDetactPlayer()
 	TimerLoopStart(checkRunningStatus, 5000)
-	RegKbEvent(onKeyboardEvent)
-	-- RegPinChange(onKeyboardEvent)
+	TimerLoopStart(checkKeyStatus, 500)
+	-- RegKbEvent(onKeyboardEvent)
 	coroutine.resume(botCo)
 end
 
@@ -145,10 +165,6 @@ function bot.stop()
 	key_hid(0)
 	scriptStatus = "stopped"
 	error("stopped")
-end
-
-function checkRunningStatus()
-	print("bot status:", scriptStatus)
 end
 
 return bot
