@@ -67,8 +67,8 @@ function bot.delay(milliseconds, forceAsync)
 	if milliseconds <= 0 then
 		return
 	end
-	forceAsync = forceAsync or false
-	if milliseconds > 80 or forceAsync == true then
+	forceAsync = forceAsync or true
+	if milliseconds >= 70 and forceAsync == true then
 		TimerStart(function()
 			if scriptStatus == "running" then
 				bot.resume()

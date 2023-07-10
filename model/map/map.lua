@@ -1,21 +1,16 @@
-
 ---@class Map: Object @map meta class
 Map = {
     name = "unknown",
-    miniMapX = 0,
-    miniMapY = 0,
-    miniMapWidth = 160,
-    miniMapHeight = 90,
-    miniMapLeftMargin = 0,
-    miniMapRightMargin = 0,
-    miniMapMeX = 0,
-    miniMapMeY = 0,
+    ---@type Rect
+    miniMapFrame = nil,
+    ---@type EdgeInsets
+    miniMapEdgeInsets = EdgeInsetsZero,
+    ---@type Point
+    miniMapMyLocation = nil,
+    ---@type Point
+    summonPosition = nil,
     ---@type integer
-    summonX = -1,
-    ---@type integer
-    summonY = -1,
-    ---@type integer
-    oneLoopStep = 4,
+    oneLoopMaxStep = 6,
     ---@type integer
     detectCount = 0,
     ---@type integer
@@ -33,13 +28,13 @@ end
 
 function Map:startDetactPlayer()
     self:locateMiniMap()
-    TimerLoopStart(function ()
+    TimerLoopStart(function()
         self:locateMiniMap()
     end, 5000)
-    TimerLoopStart(function ()
+    TimerLoopStart(function()
         self:detectOtherPlayer()
     end, 1000)
-    TimerLoopStart(function ()
+    TimerLoopStart(function()
         self:locateSelf()
     end, 100)
 end
@@ -52,11 +47,20 @@ function Map:locateMiniMap()
     if (tlX < 0 or tlY < 0) then
         print('Cannot locate mini-map')
         return false
-    else
-        self.miniMapX, self.miniMapY = tlX, tlY
-        print('located mini map:', self.miniMapX, self.miniMapY)
-        return true
     end
+    local brX, brY = FindBmp('images\\bottomRight.bmp', tlX + 20, tlY + 20, screenX / 2, screenY / 2)
+    if (brX < 0 or brY < 0) then
+        print('Cannot locate mini-map')
+        return false
+    end
+
+    local width = brX - tlX + 16
+    local height = brY - tlY
+    local origin = Point:new(tlX, tlY)
+    local size = Size:new(width, height)
+    self.miniMapFrame = Rect:new(origin, size)
+    print('located mini map:', self.miniMapFrame)
+    return true
 end
 
 ---detect other players
@@ -66,21 +70,13 @@ end
 ---| 1    # warnning
 ---| 2    # need stop
 function Map:detectOtherPlayer()
-    if self.miniMapX == nil or self.miniMapY == nil then
+    if self.miniMapFrame == nil then
         -- print("no mini map position")
         return -1
     end
 
-    local redX, redY = FindBmp('images\\red.bmp',
-        self.miniMapX,
-        self.miniMapY,
-        self.miniMapX + self.miniMapWidth,
-        self.miniMapY + self.miniMapHeight)
-    local greyX, greyY = FindBmp('images\\grey.bmp',
-        self.miniMapX,
-        self.miniMapY,
-        self.miniMapX + self.miniMapWidth,
-        self.miniMapY + self.miniMapHeight)
+    local redX, redY = FindBmpInRect('images\\red.bmp', self.miniMapFrame)
+    local greyX, greyY = FindBmpInRect('images\\grey.bmp', self.miniMapFrame)
     if (redX >= 0 or greyX >= 0) then
         self.detectCount = self.detectCount + 1
         self.noDetectCount = 0
@@ -105,40 +101,37 @@ function Map:detectOtherPlayer()
     end
 end
 
+---comment
+---@return Point | nil
 function Map:locateSelf()
-    if self.miniMapX == nil or self.miniMapY == nil then
+    if self.miniMapFrame == nil then
         print("no mini map position")
-        return -1
+        return nil
     end
 
-    local meX, meY = FindBmp('images\\minimap_me.bmp',
-        self.miniMapX,
-        self.miniMapY,
-        self.miniMapX + self.miniMapWidth,
-        self.miniMapY + self.miniMapHeight)
+    local meX, meY = FindBmpInRect('images\\minimap_me.bmp', self.miniMapFrame)
     if (meX >= 0 and meY >= 0) then
         print('my location:', meX, meY)
-        self.miniMapMeX, self.miniMapMeY = meX - self.miniMapX, meY - self.miniMapMeY
-        if self.miniMapMeX <= 10 then
+        self.miniMapMyLocation = Point:new(meX - self.miniMapFrame.origin.x, meY - self.miniMapFrame.origin.y)
+        if self:nearLeftEdge() then
             -- print("left corner!!!!!!!!!!!!!!!")
-        elseif self.miniMapWidth - self.miniMapMeX <= 10 then
+        elseif self:nearRightEdge() then
             -- print("right corner!!!!!!!!!!!!!!!")
         end
-        return meX, meY
+        return self.miniMapMyLocation
     else
         -- print('Cannot locate self')
-        return -1, -1
+        return nil
     end
 end
 
----comment
 ---@return boolean
 function Map:nearLeftEdge()
-    return self.miniMapMeX <= 50
+    return self.miniMapMyLocation.x - self.miniMapEdgeInsets.left <= 10
 end
 
 ---comment
 ---@return boolean
 function Map:nearRightEdge()
-    return self.miniMapWidth - self.miniMapMeX <= 30
+    return self.miniMapFrame.size.width - self.miniMapMyLocation.x - self.miniMapEdgeInsets.right <= 10
 end

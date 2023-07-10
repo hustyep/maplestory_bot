@@ -1,4 +1,4 @@
-
+require("model.commonModel")
 
 function CurrentTime()
     return os.clock() * 1000
@@ -10,6 +10,17 @@ function Sleep(milliseconds)
         return
     end
     Delay(milliseconds)
+end
+
+---@param path string
+---@param frame Rect
+---@return number, number
+function FindBmpInRect(path, frame)
+    return FindBmp(path,
+    frame.origin.x,
+    frame.origin.y,
+    frame.size.width,
+    frame.size.height)
 end
 
 ---创建枚举

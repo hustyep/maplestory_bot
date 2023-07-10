@@ -85,7 +85,7 @@ end
 ---@param y integer @y coordinate of target location in mini map
 function BotScript:moveToPosition(x, y)
     print("move to postion", x, y)
-    local distanceX = x - self.curMap.miniMapMeX
+    local distanceX = x - self.curMap.miniMapMyLocation.x
     local direction = Direction.right
     if distanceX < 0 then
         direction = Direction.left

@@ -1,36 +1,7 @@
 require("model.classic")
+require("model.commonModel")
 
 JumpKey = "S"
-
----@enum Direction
-Direction = {
-    top = { "up" },
-    bottom = { "down" },
-    left = { "left" },
-    right = { "right" },
-    topLeft = { "top", "left" },
-    topRight = { "top", "right" },
-    bottomLeft = { "down", "left" },
-    bottomRight = { "down", "right" }
-}
-
----点击方向键
----@param direction Direction
-function PressDirectionKey(direction)
-    for i, v in ipairs(direction) do
-        -- print("press direction:", direction)
-        KeyPress(v)
-    end
-end
-
----按下方向键
----@param direction Direction
-function PressDownDirectionKey(direction)
-    for i, v in ipairs(direction) do
-        -- print("press direction:", direction)
-        KeyDown(v)
-    end
-end
 
 ---@class Skill: Object @skill meta class
 Skill = {
