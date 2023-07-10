@@ -6,9 +6,14 @@ Map = {
     miniMapY = 0,
     miniMapWidth = 160,
     miniMapHeight = 90,
+    miniMapLeftMargin = 0,
+    miniMapRightMargin = 0,
     miniMapMeX = 0,
     miniMapMeY = 0,
-    floors = 3,
+    ---@type integer
+    summonX = -1,
+    ---@type integer
+    summonY = -1,
     ---@type integer
     oneLoopStep = 4,
     ---@type integer
@@ -112,12 +117,12 @@ function Map:locateSelf()
         self.miniMapX + self.miniMapWidth,
         self.miniMapY + self.miniMapHeight)
     if (meX >= 0 and meY >= 0) then
-        -- print('my location:', meX, meY)
+        print('my location:', meX, meY)
         self.miniMapMeX, self.miniMapMeY = meX - self.miniMapX, meY - self.miniMapMeY
         if self.miniMapMeX <= 10 then
-            print("left corner!!!!!!!!!!!!!!!")
+            -- print("left corner!!!!!!!!!!!!!!!")
         elseif self.miniMapWidth - self.miniMapMeX <= 10 then
-            print("right corner!!!!!!!!!!!!!!!")
+            -- print("right corner!!!!!!!!!!!!!!!")
         end
         return meX, meY
     else
@@ -135,5 +140,5 @@ end
 ---comment
 ---@return boolean
 function Map:nearRightEdge()
-    return self.miniMapWidth - self.miniMapMeX <= 50
+    return self.miniMapWidth - self.miniMapMeX <= 30
 end

@@ -30,10 +30,24 @@ function BotScript:new(o, role, map)
     return obj
 end
 
+---@param role Role
+---@param map Map
+function BotScript:start(role, map)
+    self.curRole = role
+    self.curMap = map
+
+    bot.delay(3000, true)
+    self:moveToPosition(100, 0)
+    -- while true do
+    --     print("loop Count:", self.loopCount, bot.runningTime())
+    --     -- self:hitAndRunLoop()
+    --     bot.delay(3000, true)
+    -- end
+end
+
 function BotScript:hitAndRunLoop()
-    bot.delay(100, true)
     PressDirectionKey(self.curDirection)
-    bot.delay(100, true)
+    bot.delay(200, true)
     self.curRole:useBuffSkill()
 
     while true do
@@ -46,6 +60,7 @@ function BotScript:hitAndRunLoop()
                 break
             end
         end
+        PressDirectionKey(self.curDirection)
         self.curRole:jumpAndHit(3)
     end
 
@@ -65,17 +80,34 @@ function BotScript:hitAndRunLoop()
     end
 end
 
----@param role Role
----@param map Map
-function BotScript:start(role, map)
-    self.curRole = role
-    self.curMap = map
-
-    bot.delay(1000, true)
-    while true do
-        print("loop Count:", self.loopCount, bot.runningTime())
-        self:hitAndRunLoop()
+---comment
+---@param x integer @x coordinate of target location in mini map
+---@param y integer @y coordinate of target location in mini map
+function BotScript:moveToPosition(x, y)
+    print("move to postion", x, y)
+    local distanceX = x - self.curMap.miniMapMeX
+    local direction = Direction.right
+    if distanceX < 0 then
+        direction = Direction.left
     end
+    local seconds = math.abs(distanceX) / self.curRole.horizontalVelocity
+    print("distanceX, seconds", distanceX, seconds)
+    if direction == self.curDirection then
+        if seconds > 1 then
+            seconds = seconds - 1
+        end
+    else
+        seconds = seconds + 1
+    end
+
+    self.curDirection = direction
+    print("start time:", bot.runningTime())
+    PressDownDirectionKey(direction)
+    bot.delay(math.ceil(seconds * 1000), true)
+    print("end time1:", bot.runningTime())
+    KeyUp("")
+    print("end time2:", bot.runningTime())
+    self.curRole.teleportSkill:cast(Direction.top, true)
 end
 
 return BotScript

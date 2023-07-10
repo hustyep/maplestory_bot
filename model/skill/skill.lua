@@ -14,9 +14,18 @@ Direction = {
     bottomRight = { "down", "right" }
 }
 
----按下方向键
+---点击方向键
 ---@param direction Direction
 function PressDirectionKey(direction)
+    for i, v in ipairs(direction) do
+        -- print("press direction:", direction)
+        KeyPress(v)
+    end
+end
+
+---按下方向键
+---@param direction Direction
+function PressDownDirectionKey(direction)
     for i, v in ipairs(direction) do
         -- print("press direction:", direction)
         KeyDown(v)

@@ -1,5 +1,6 @@
 require("model.classic")
 require("model.skill.moveSkill")
+require("model.skill.teleportSkill")
 
 ---@class Role: Object @role meta class
 Role = {
@@ -17,10 +18,12 @@ Role = {
     summonSkill = nil,
     ---@type Skill
     showerSkill = nil,
-    ---@type Skill @teleport skill, such as blink
+    ---@type TeleportSkill @teleport skill, such as blink
     teleportSkill = nil,
     ---@type string @the key of return scroll
-    returnKey = "N"
+    returnKey = "N",
+    ---@type number
+    horizontalVelocity = 14
 }
 setmetatable(Role, Object)
 Role.__index = Role

@@ -45,8 +45,8 @@ function MultiJump:cast(jumpTimes)
     -- print("MultiJump", self.key, jumpTimes)
 
     self.castedTime = os.clock()
-    bot.pressKey(JumpKey, 30, true)
-    bot.pressKey(self.key, 50)
+    bot.pressKey(JumpKey, 50, true)
+    bot.pressKey(self.key, 30)
 
     if jumpTimes == 3 then
         bot.pressKey(self.key, 30, true)
