@@ -14,6 +14,8 @@ BotScript = {
 
     ---@type integer
     loopCount = 0,
+
+    positionTolerance = 10,
 }
 setmetatable(BotScript, Object)
 BotScript.__index = BotScript
@@ -58,14 +60,11 @@ function BotScript:hitAndRunLoop()
                 break
             end
         end
+        self:tryUseAoeSkill()
         PressDirectionKey(self.curDirection)
         self.curRole:jumpAndHit(3)
+        self:tryUseAoeSkill()
     end
-
-    -- for i = 1, self.curMap.oneLoopStep do
-    --     -- print("jump and hit: " .. i .. " -----------------")
-    --     self.curRole:jumpAndHit(3)
-    -- end
 
     KeyUp("")
     -- key_hid(0)
@@ -78,7 +77,6 @@ function BotScript:hitAndRunLoop()
     end
 end
 
----comment
 ---@param point Point @coordinate of target location in mini map
 ---@return boolean success
 function BotScript:moveToPosition(point)
@@ -187,6 +185,30 @@ function BotScript:tryUseSummonSkill()
         self.curRole.summonSkill:cast()
 
         return true
+    end
+
+    return false
+end
+
+---@return boolean
+function BotScript:tryUseAoeSkill()
+    local canUse = false
+    for index, value in ipairs(self.curMap.aoePositions) do
+        if math.abs(value.x - self.curMap.miniMapMyLocation.x) <= self.positionTolerance and
+            math.abs(value.y - self.curMap.miniMapMyLocation.y) <= self.positionTolerance then
+                canUse = true
+                break
+        end
+    end
+
+    if canUse == false then
+        return false
+    end
+
+    for index, value in ipairs(self.curRole.aoeSkills) do
+        if value:cast() then
+            return true
+        end
     end
 
     return false

@@ -16,6 +16,8 @@ Map = {
     preSummonPosition = nil,
     ---@type Point
     showerPosition = nil,
+    ---@type Point[]
+    aoePositions = {},
     ---@type integer
     oneLoopMaxStep = 6,
     ---@type integer
