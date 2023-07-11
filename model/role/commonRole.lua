@@ -3,14 +3,14 @@ dofile("model/role/role.lua")
 -- normal attack skill
 local atkSkill = Skill:new()
 atkSkill.key = "F"
-atkSkill.backswing = 300
+atkSkill.backswing = 250
 
 function atkSkill:cast()
     -- print('Attack skill: ', self.key)
 
     self.castedTime = os.clock()
     bot.pressKey(self.key, self.backswing, true)
-    bot.pressKey("D", 250, true)
+    bot.pressKey("D", 200, true)
 
     return true
 end

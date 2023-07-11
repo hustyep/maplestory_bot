@@ -36,13 +36,12 @@ function BotScript:start(role, map)
     self.curRole = role
     self.curMap = map
 
-    bot.delay(3000, true)
-    self:moveToPosition(100, 0)
-    -- while true do
-    --     print("loop Count:", self.loopCount, bot.runningTime())
-    --     -- self:hitAndRunLoop()
-    --     bot.delay(3000, true)
-    -- end
+    -- bot.delay(3000, true)
+    -- self:moveToPosition(50, 0)
+    while true do
+        print("loop Count:", self.loopCount, bot.runningTime())
+        self:hitAndRunLoop()
+    end
 end
 
 function BotScript:hitAndRunLoop()
@@ -83,7 +82,11 @@ end
 ---comment
 ---@param x integer @x coordinate of target location in mini map
 ---@param y integer @y coordinate of target location in mini map
+---@return boolean success
 function BotScript:moveToPosition(x, y)
+    if self.curMap.miniMapMyLocation == nil then
+        return false
+    end
     print("move to postion", x, y)
     local distanceX = x - self.curMap.miniMapMyLocation.x
     local direction = Direction.right
@@ -108,6 +111,8 @@ function BotScript:moveToPosition(x, y)
     KeyUp("")
     print("end time2:", bot.runningTime())
     self.curRole.teleportSkill:cast(Direction.top, true)
+
+    return true
 end
 
 return BotScript

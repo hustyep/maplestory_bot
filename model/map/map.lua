@@ -1,3 +1,5 @@
+require("spring")
+
 ---@class Map: Object @map meta class
 Map = {
     name = "unknown",
@@ -31,9 +33,9 @@ function Map:startDetactPlayer()
     TimerLoopStart(function()
         self:locateMiniMap()
     end, 5000)
-    TimerLoopStart(function()
-        self:detectOtherPlayer()
-    end, 1000)
+    -- TimerLoopStart(function()
+    --     self:detectOtherPlayer()
+    -- end, 1000)
     TimerLoopStart(function()
         self:locateSelf()
     end, 100)
@@ -48,7 +50,7 @@ function Map:locateMiniMap()
         print('Cannot locate mini-map')
         return false
     end
-    local brX, brY = FindBmp('images\\bottomRight.bmp', tlX + 20, tlY + 20, screenX / 2, screenY / 2)
+    local brX, brY = FindBmp('images\\btmRight.bmp', tlX + 20, tlY + 20, screenX / 2, screenY / 2)
     if (brX < 0 or brY < 0) then
         print('Cannot locate mini-map')
         return false
@@ -111,8 +113,8 @@ function Map:locateSelf()
 
     local meX, meY = FindBmpInRect('images\\minimap_me.bmp', self.miniMapFrame)
     if (meX >= 0 and meY >= 0) then
-        print('my location:', meX, meY)
         self.miniMapMyLocation = Point:new(meX - self.miniMapFrame.origin.x, meY - self.miniMapFrame.origin.y)
+        -- print('my location:', self.miniMapMyLocation)
         if self:nearLeftEdge() then
             -- print("left corner!!!!!!!!!!!!!!!")
         elseif self:nearRightEdge() then
@@ -120,18 +122,18 @@ function Map:locateSelf()
         end
         return self.miniMapMyLocation
     else
-        -- print('Cannot locate self')
+        print('Cannot locate self')
         return nil
     end
 end
 
 ---@return boolean
 function Map:nearLeftEdge()
-    return self.miniMapMyLocation.x - self.miniMapEdgeInsets.left <= 10
+    return self.miniMapMyLocation.x - self.miniMapEdgeInsets.left <= 35
 end
 
 ---comment
 ---@return boolean
 function Map:nearRightEdge()
-    return self.miniMapFrame.size.width - self.miniMapMyLocation.x - self.miniMapEdgeInsets.right <= 10
+    return self.miniMapFrame.size.width - self.miniMapMyLocation.x - self.miniMapEdgeInsets.right <= 35
 end

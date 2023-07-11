@@ -15,6 +15,7 @@
         "VK",
         "TimerStart",
         "SayString",
-        "GetKeyState"
+        "GetKeyState",
+        "Delay"
     ]
 }

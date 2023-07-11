@@ -19,8 +19,8 @@ function FindBmpInRect(path, frame)
     return FindBmp(path,
     frame.origin.x,
     frame.origin.y,
-    frame.size.width,
-    frame.size.height)
+    frame.origin.x + frame.size.width,
+    frame.origin.y + frame.size.height)
 end
 
 ---创建枚举
@@ -37,7 +37,7 @@ function CreatEnumTable(tbl, index)
     return enumtbl
 end
 
-function print_r(t)
+function Print_r(t)
     local print_r_cache = {}
     local function sub_print_r(t, indent)
         if (print_r_cache[tostring(t)]) then
