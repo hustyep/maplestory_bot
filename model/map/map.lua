@@ -2,6 +2,7 @@ require("spring")
 
 ---@class Map: Object @map meta class
 Map = {
+    ---@type string
     name = "unknown",
     ---@type Rect
     miniMapFrame = nil,
@@ -11,6 +12,10 @@ Map = {
     miniMapMyLocation = nil,
     ---@type Point
     summonPosition = nil,
+    ---@type Point
+    preSummonPosition = nil,
+    ---@type Point
+    showerPosition = nil,
     ---@type integer
     oneLoopMaxStep = 6,
     ---@type integer
@@ -24,7 +29,6 @@ Map.__index = Map
 function Map:new(o)
     local obj = o or {}
     setmetatable(obj, self)
-
     return obj
 end
 
@@ -113,7 +117,9 @@ function Map:locateSelf()
 
     local meX, meY = FindBmpInRect('images\\minimap_me.bmp', self.miniMapFrame)
     if (meX >= 0 and meY >= 0) then
-        self.miniMapMyLocation = Point:new(meX - self.miniMapFrame.origin.x, meY - self.miniMapFrame.origin.y)
+        local x = meX - self.miniMapFrame.origin.x
+        local y = meY - self.miniMapFrame.origin.y
+        self.miniMapMyLocation = Point:new(x, y)
         -- print('my location:', self.miniMapMyLocation)
         if self:nearLeftEdge() then
             -- print("left corner!!!!!!!!!!!!!!!")

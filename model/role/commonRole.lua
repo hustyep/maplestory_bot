@@ -16,14 +16,11 @@ function atkSkill:cast()
 end
 
 -- move skill, flash jump or blink
-local jumpSkill = MultiJump:new()
-jumpSkill.key = ";"
-jumpSkill.backswing = 50
-jumpSkill.maxTimes = 3
-
-local teleportSkill = TeleportSkill:new()
-teleportSkill.key ="G"
-teleportSkill.backswing = 1000
+local moveSkill = MultiJump:new()
+moveSkill.key = ";"
+moveSkill.backswing = 50
+moveSkill.maxTimes = 3
+moveSkill.unitDistance = 20
 
 -- buff skill or buff potion
 local buff1 = Skill:newWithArray({ "2", 120000, 0, 0, 800, 0, 0 })
@@ -38,13 +35,22 @@ local skill1 = Skill:newWithArray({ "x", 190000, 0, 0, 850, 0, 0 })
 local skill2 = Skill:newWithArray({ "c", 120000, 0, 0, 600, 0, 0 })
 local aoeSkills = { skill1, skill2 }
 
+--- summonning Skill
+local summonSKill = SummonSkill:new()
+summonSKill.cooldown = 60000
+
+--- teleport Skill
+local teleportSkill = TeleportSkill:new()
+teleportSkill.key ="G"
+teleportSkill.backswing = 1000
+
 CommonRole = Role:new()
 CommonRole.name = "shadower"
 CommonRole.mainAtkSkill = atkSkill
-CommonRole.moveSkill = jumpSkill
+CommonRole.moveSkill = moveSkill
 CommonRole.buffSklls = buffSkills
 CommonRole.aoeSkills = aoeSkills
-CommonRole.summonSkill = SummoningSkill:new()
+CommonRole.summonSkill = summonSKill
 -- testRole.showerSkill = ShowerSkill:new()
 CommonRole.teleportSkill = teleportSkill
 CommonRole.horizontalVelocity = 13

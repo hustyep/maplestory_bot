@@ -8,19 +8,13 @@ Skill = {
     ---@type string
     key = "F",
     ---@type integer @milliseconds
-    cooldown = 60000,
+    cooldown = 0,
     ---@type integer @milliseconds
     castedTime = 0,
     ---@type integer @milliseconds
     precast = 0,
     ---@type integer @milliseconds
     backswing = 500,
-    ---@type integer
-    castX = 0,
-    ---@type integer
-    castY = 0,
-    castToleranceX = 10,
-    castToleranceY = 10,
 }
 setmetatable(Skill, Object)
 Skill.__index = Skill
@@ -46,36 +40,35 @@ function Skill:newWithArray(array)
     return o
 end
 
----@param x integer | nil
----@param y integer | nil
+---@param milliseconds integer | nil
 ---@return boolean
-function Skill:canUse(x, y)
-    if self.cooldown > 0 then
-        if CurrentTime() - self.castedTime < self.cooldown and self.castedTime ~= 0 then
-            print('try cast skill failed: ', self.key, 'cooling')
-            return false
-        end
+function Skill:canUse(milliseconds)
+    if self.cooldown == 0 or self.castedTime == 0 then
+        return true
     end
 
-    if self.castX ~= 0 and self.castY ~= 0 then
-        if math.abs(x - self.castX) > self.castToleranceX or math.abs(y - self.castY) > self.castToleranceY then
-            print('try cast skill failed: ', self.key, ' position')
-            return false
-        end
+    milliseconds = milliseconds or 0
+    if CurrentTime() - self.castedTime - milliseconds < self.cooldown then
+        print('try cast skill failed: ', self.key, 'cooling')
+        return false
     end
+
+    -- if point == nil then
+    --     return true
+    -- end
+    -- if self.castPoint ~= nil then
+    --     if math.abs(point.x - self.castPoint.x) > self.castTolerance or math.abs(point.y - self.castPoint.y) > self.castTolerance then
+    --         print('try cast skill failed: ', self.key, ' position')
+    --         return false
+    --     end
+    -- end
     return true
 end
 
----comment
----@param x integer | nil
----@param y integer | nil
 ---@return boolean success
-function Skill:cast(x, y)
-    -- print('try cast skill: ', self.key, x, y)
-    x = x or 0
-    y = y or 0
-
-    if self:canUse(x, y) == false then
+function Skill:cast()
+    -- print('try cast skill: ', self.key)
+    if self:canUse() == false then
         return false
     end
 
@@ -90,16 +83,21 @@ function Skill:cast(x, y)
 end
 
 -- 职业放置技能
-SummoningSkill = Skill:new()
+---@class SummonSkill: Skill @summon skill meta class
+SummonSkill = {}
+setmetatable(SummonSkill, Skill)
+SummonSkill.__index = SummonSkill
 
-function SummoningSkill:new(o)
-    o = o or Skill:new()
+function SummonSkill:new(o)
+    o = o or {}
     setmetatable(o, self)
-    self.__index = self
+    o.key = "w"
+    o.precast = 500
+    o.backswing = 800
     return o
 end
 
--- 放置技能
+-- 艾尔达放置技能
 ShowerSkill = Skill:new()
 
 function ShowerSkill:new(o)

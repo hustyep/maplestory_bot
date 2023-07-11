@@ -30,16 +30,14 @@ function BotScript:new(o, role, map)
     return obj
 end
 
----@param role Role
----@param map Map
-function BotScript:start(role, map)
-    self.curRole = role
-    self.curMap = map
+function BotScript:start()
+    assert(self.curRole, "role is nil")
+    assert(self.curMap, "map is nil")
 
-    -- bot.delay(3000, true)
-    -- self:moveToPosition(50, 0)
     while true do
         print("loop Count:", self.loopCount, bot.runningTime())
+        assert(self.curMap.miniMapFrame, "frame of minimap is nil")
+        assert(self.curMap.miniMapMyLocation, "my location is nil")
         self:hitAndRunLoop()
     end
 end
@@ -48,6 +46,7 @@ function BotScript:hitAndRunLoop()
     PressDirectionKey(self.curDirection)
     bot.delay(200, true)
     self.curRole:useBuffSkill()
+    self:tryUseSummonSkill()
 
     while true do
         if self.curDirection == Direction.right then
@@ -80,39 +79,117 @@ function BotScript:hitAndRunLoop()
 end
 
 ---comment
----@param x integer @x coordinate of target location in mini map
----@param y integer @y coordinate of target location in mini map
+---@param point Point @coordinate of target location in mini map
 ---@return boolean success
-function BotScript:moveToPosition(x, y)
-    if self.curMap.miniMapMyLocation == nil then
-        return false
+function BotScript:moveToPosition(point)
+    assert(self.curMap.miniMapMyLocation, "my location is nil")
+    print("move to postion", point)
+
+    if self.curRole.moveSkill == nil then
+        self:walkTo(point.x)
+    else
+        self:jumpTo(point.x)
     end
-    print("move to postion", x, y)
+
+    if point.y > self.curMap.miniMapMyLocation.y then
+        self:moveUp(point.y)
+    elseif point.y < self.curMap.miniMapMyLocation.y then
+        self:moveDown(point.y)
+    end
+
+    return true
+end
+
+---@param x number
+function BotScript:walkTo(x)
+    assert(self.curRole.horizontalVelocity > 0, "horizontal velocity is zero")
+
     local distanceX = x - self.curMap.miniMapMyLocation.x
     local direction = Direction.right
     if distanceX < 0 then
         direction = Direction.left
+        distanceX = math.abs(distanceX)
     end
-    local seconds = math.abs(distanceX) / self.curRole.horizontalVelocity
-    print("distanceX, seconds", distanceX, seconds)
+
+    local seconds = distanceX / self.curRole.horizontalVelocity
     if direction == self.curDirection then
         if seconds > 1 then
             seconds = seconds - 1
         end
     else
+        -- 减去转身时间
         seconds = seconds + 1
     end
-
     self.curDirection = direction
-    print("start time:", bot.runningTime())
     PressDownDirectionKey(direction)
     bot.delay(math.ceil(seconds * 1000), true)
-    print("end time1:", bot.runningTime())
     KeyUp("")
-    print("end time2:", bot.runningTime())
-    self.curRole.teleportSkill:cast(Direction.top, true)
+end
 
-    return true
+---@param x number
+function BotScript:jumpTo(x)
+    assert(self.curRole.moveSkill.unitDistance > 0, "unitDistance is 0")
+
+    local distanceX = x - self.curMap.miniMapMyLocation.x
+    local direction = Direction.right
+    if distanceX < 0 then
+        direction = Direction.left
+        distanceX = math.abs(distanceX)
+    end
+    print("distanceX, direction", distanceX, direction)
+
+    local count = distanceX / self.curRole.moveSkill.unitDistance
+    if count > 0 then
+        for i = 1, count do
+            self.curRole:jumpAndHit(3)
+        end
+    end
+
+    self.curMap:locateSelf()
+    self:walkTo(x)
+end
+
+function BotScript:moveUp(y)
+    if self.curRole.teleportSkill ~= nil and self.curRole.teleportSkill:canUse() then
+        self.curRole.teleportSkill:cast(Direction.top, 30)
+        return true
+    elseif self.curRole.ropeLiftSkill ~= nil and self.curRole.ropeLiftSkill:canUse() then
+        self.curRole.ropeLiftSkill:cast(false)
+        return true
+    elseif self.curRole.jumpUpSkill ~= nil and self.curRole.jumpUpSkill:canUse() then
+        self.curRole.jumpUpSkill:cast(false)
+        return true
+    end
+    return false
+end
+
+function BotScript:moveDown(y)
+    assert(self.curRole.jumpDownSkill, "jump down skill is nil")
+    self.curRole.jumpDownSkill:cast()
+    self.curMap:locateSelf()
+    if self.curMap.miniMapMyLocation.y > y then
+        self:moveDown(y)
+    end
+end
+
+function BotScript:tryUseSummonSkill()
+    if self.curMap.summonPosition == nil or self.curRole.summonSkill == nil then
+        return false
+    end
+
+    if self.curRole.summonSkill:canUse(8000) then
+        if self.curMap.preSummonPosition and self.curRole.preSummonSkill then
+            self:moveToPosition(self.curMap.summonPosition)
+            self.curRole.preSummonSkill:cast()
+        end
+
+        self:moveToPosition(self.curMap.summonPosition)
+        self.curRole.summonSkill:cast()
+
+        return true
+    end
+
+    return false
 end
 
 return BotScript

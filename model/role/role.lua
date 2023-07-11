@@ -1,6 +1,6 @@
 require("model.classic")
+require("model.skill.skill")
 require("model.skill.moveSkill")
-require("model.skill.teleportSkill")
 
 ---@class Role: Object @role meta class
 Role = {
@@ -14,12 +14,20 @@ Role = {
     buffSklls = {},
     ---@type Skill[]
     aoeSkills = {},
-    ---@type Skill
+    ---@type SummonSkill | nil
     summonSkill = nil,
-    ---@type Skill
+    ---@type Skill | nil
+    preSummonSkill = nil,
+    ---@type Skill | nil
     showerSkill = nil,
-    ---@type TeleportSkill @teleport skill, such as blink
+    ---@type TeleportSkill | nil @teleport skill, such as blink
     teleportSkill = nil,
+    ---@type JumpUpSkill | nil
+    jumpUpSkill = nil,
+    ---@type RopeLiftSkill | nil
+    ropeLiftSkill = nil,
+    ---@type JumpDownSkill | nil
+    jumpDownSkill = nil,
     ---@type string @the key of return scroll
     returnKey = "N",
     ---@type number
@@ -56,10 +64,10 @@ function Role:jumpAndHit(jumpTimes)
 end
 
 function Role:say(text)
-	bot.pressKey("Enter", 500)
-	SayString(text)
-	Sleep(200)
-	bot.pressKey("Enter", 500)
+    bot.pressKey("Enter", 500)
+    SayString(text)
+    Sleep(200)
+    bot.pressKey("Enter", 500)
 end
 
 ---return to the nearest town and stop the script
